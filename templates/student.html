@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Self Check-in Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        /* Standalone portal overrides for clean center card layout */
+        .student-portal-body {
+            background: radial-gradient(circle at top right, rgba(59, 130, 246, 0.08), transparent),
+                        radial-gradient(circle at bottom left, rgba(30, 64, 175, 0.05), transparent),
+                        var(--bg-light);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .portal-card {
+            background-color: var(--card-bg);
+            max-width: 500px;
+            width: 100%;
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
+            padding: 32px;
+            transition: var(--transition);
+        }
+        .portal-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .portal-header h1 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+            margin-top: 12px;
+        }
+        .portal-header p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        .student-details-card {
+            background-color: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+        .student-details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 12px;
+            font-size: 0.85rem;
+        }
+        .student-detail-label {
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        .student-detail-val {
+            color: var(--text-main);
+            font-weight: 600;
+        }
+        .bus-live-box {
+            border: 1px dashed var(--primary-light);
+            background-color: rgba(59, 130, 246, 0.02);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 24px;
+        }
+        .bus-live-header {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .checkin-action-zone {
+            text-align: center;
+            margin-top: 28px;
+        }
+        .btn-checkin-large {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            padding: 16px;
+            font-size: 1.1rem;
+            border-radius: 12px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(30, 64, 175, 0.25);
+            transition: var(--transition);
+        }
+        .btn-checkin-large:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(30, 64, 175, 0.35);
+        }
+        .checkin-success-box {
+            background-color: #d1fae5;
+            border: 1px solid #a7f3d0;
+            color: #065f46;
+            border-radius: 12px;
+            padding: 16px;
+            font-weight: 600;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body id="student-portal-page" class="student-portal-body">
+    
+    <!-- Outer Card -->
+    <div class="portal-card">
+        
+        <!-- Verification Screen (Verification mode) -->
+        <div id="section-verify">
+            <div class="portal-header">
+                <div class="sidebar-logo-icon" style="margin: 0 auto;">
+                    <i class="fas fa-id-card"></i>
+                </div>
+                <h1>Student Portal</h1>
+                <p>Verify your Student ID to check in and track your bus</p>
+            </div>
+            
+            <form id="form-student-verify">
+                <div class="form-group">
+                    <label for="portal-student-id">STUDENT ID</label>
+                    <div style="position: relative;">
+                        <input type="text" id="portal-student-id" placeholder="Enter ID (e.g. S101)" required style="padding-left: 40px; text-transform: uppercase;">
+                        <i class="fas fa-user-graduate" style="position: absolute; left: 14px; top: 12px; color: var(--text-muted);"></i>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 12px; margin-top: 8px;">
+                    Verify Student ID <i class="fas fa-arrow-right" style="margin-left: 8px;"></i>
+                </button>
+            </form>
+            
+            <div style="text-align: center; margin-top: 24px; font-size: 0.8rem; color: var(--text-muted);">
+                <a href="{{ url_for('login') }}" style="color: var(--primary-light); text-decoration: none; font-weight: 500;">
+                    <i class="fas fa-lock"></i> Go to Admin Login
+                </a>
+            </div>
+        </div>
+
+        <!-- Student Main Dashboard Screen (Authenticated mode) -->
+        <div id="section-dashboard" class="hidden">
+            <div class="portal-header" style="margin-bottom: 20px;">
+                <div class="user-avatar" id="student-avatar" style="width: 48px; height: 48px; font-size: 1.15rem; margin: 0 auto 12px auto; background-color: var(--primary-light);">
+                    AD
+                </div>
+                <h1 id="welcome-student-name" style="margin-top: 4px;">Welcome, Student</h1>
+                <p>Self Check-in & Live Fleet Telemetry</p>
+            </div>
+
+            <!-- Profile Info Card -->
+            <div class="student-details-card">
+                <h3 style="font-size: 0.9rem; border-bottom: 1px solid var(--border); padding-bottom: 8px; font-weight: 700;">Student Profile</h3>
+                <div class="student-details-grid">
+                    <div>
+                        <span class="student-detail-label">Student ID:</span>
+                        <div id="lbl-student-id" class="student-detail-val">-</div>
+                    </div>
+                    <div>
+                        <span class="student-detail-label">Department:</span>
+                        <div id="lbl-student-dept" class="student-detail-val">-</div>
+                    </div>
+                    <div style="grid-column: span 2; margin-top: 4px;">
+                        <span class="student-detail-label">Assigned Corridor:</span>
+                        <div>
+                            <span class="badge badge-bus" id="lbl-student-bus" style="font-size: 0.85rem; padding: 4px 10px;">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Bus Tracker status overlay -->
+            <div class="bus-live-box">
+                <div class="bus-live-header">
+                    <i class="fas fa-satellite-dish" class="fa-pulse"></i> Live Bus Telemetry
+                </div>
+                
+                <div class="route-detail-row">
+                    <span>Active Stop:</span>
+                    <strong id="lbl-bus-curr" style="color: var(--text-main);">-</strong>
+                </div>
+                <div class="route-detail-row">
+                    <span>Next Stop:</span>
+                    <strong id="lbl-bus-next" style="color: var(--text-main);">-</strong>
+                </div>
+                <div class="route-detail-row">
+                    <span>Bus ETA:</span>
+                    <strong id="lbl-bus-eta" style="color: var(--primary-light);">-</strong>
+                </div>
+                <div class="route-detail-row">
+                    <span>Status:</span>
+                    <span id="lbl-bus-status" style="font-weight: 600; color: var(--accent);">-</span>
+                </div>
+            </div>
+
+            <!-- Boarding Checkin Trigger Zone -->
+            <div class="checkin-action-zone">
+                <!-- Check-in Action Mode -->
+                <div id="checkin-action-trigger">
+                    <button class="btn-checkin-large" id="btn-self-checkin">
+                        <i class="fas fa-qrcode"></i> Confirm My Boarding
+                    </button>
+                    <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 10px;">
+                        Click this button once you walk inside the bus corridor to mark your attendance.
+                    </p>
+                </div>
+                
+                <!-- Check-in Success Mode -->
+                <div id="checkin-success-display" class="hidden">
+                    <div class="checkin-success-box">
+                        <i class="fas fa-check-circle" style="font-size: 1.5rem;"></i>
+                        <span>Boarding Attendance Recorded!</span>
+                        <span id="lbl-checkin-timestamp" style="font-size: 0.75rem; font-weight: 500; opacity: 0.8;">Recorded at: 2026-06-29 08:00</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 32px; border-top: 1px solid var(--border); padding-top: 16px;">
+                <button id="btn-portal-exit" class="btn btn-secondary btn-sm" style="border: 1px solid var(--border); background-color: white;">
+                    <i class="fas fa-sign-out-alt"></i> Exit Portal
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+{
+  "route_id": "Route_A1",
+  "route_name": "Route A1: Gandhipuram - PSG Tech",
+  "stops": [
+    {
+      "stop_name": "Stop 1: Gandhipuram Central Bus Stand",
+      "latitude": 11.0168,
+      "longitude": 76.9558,
+      "is_stop": true,
+      "eta_minutes": 0
+    },
+    {
+      "stop_name": "Cross Cut Road Junction",
+      "latitude": 11.0205,
+      "longitude": 76.9585,
+      "is_stop": false,
+      "eta_minutes": 4
+    },
+    {
+      "stop_name": "Stop 2: Lakshmi Mills Junction",
+      "latitude": 11.0185,
+      "longitude": 76.9725,
+      "is_stop": true,
+      "eta_minutes": 10
+    },
+    {
+      "stop_name": "Nava India Intersection",
+      "latitude": 11.0210,
+      "longitude": 76.9810,
+      "is_stop": false,
+      "eta_minutes": 15
+    },
+    {
+      "stop_name": "Stop 3: Peelamedu Bus Stop",
+      "latitude": 11.0232,
+      "longitude": 76.9890,
+      "is_stop": true,
+      "eta_minutes": 20
+    },
+    {
+      "stop_name": "Stop 4: Fun Republic Mall",
+      "latitude": 11.0255,
+      "longitude": 76.9940,
+      "is_stop": true,
+      "eta_minutes": 25
+    },
+    {
+      "stop_name": "College: PSG Tech Main Gate",
+      "latitude": 11.0244,
+      "longitude": 76.9961,
+      "is_stop": true,
+      "eta_minutes": 30
+    }
+  ]
+}

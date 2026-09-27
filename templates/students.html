@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management - Bus Monitoring and Attendance System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body id="students-page">
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo-icon">
+                    <i class="fas fa-bus"></i>
+                </div>
+                <h2>Fleet Monitor</h2>
+            </div>
+            
+            <ul class="sidebar-menu">
+                <li>
+                    <a href="{{ url_for('dashboard') }}">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="active">
+                    <a href="{{ url_for('students_page') }}">
+                        <i class="fas fa-user-graduate"></i>
+                        <span>Students</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('attendance_page') }}">
+                        <i class="fas fa-clipboard-user"></i>
+                        <span>Attendance</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('routes_page') }}">
+                        <i class="fas fa-map-location-dot"></i>
+                        <span>Live Tracking</span>
+                    </a>
+                </li>
+            </ul>
+            
+            <div class="sidebar-footer">
+                <a href="{{ url_for('logout') }}" class="btn-logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Log Out</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="page-header">
+                <div>
+                    <h1>Student Directory</h1>
+                    <p>Manage registered riders and their assigned buses</p>
+                </div>
+                <div class="user-profile">
+                    <div class="user-avatar">AD</div>
+                    <span style="font-weight: 500; font-size: 0.9rem;">Administrator</span>
+                </div>
+            </header>
+
+            <!-- Table Card Panel -->
+            <div class="card-panel">
+                <div class="table-toolbar">
+                    <div class="search-box">
+                        <input type="text" id="search-students" placeholder="Search student name, ID, or bus...">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <button class="btn btn-primary" id="btn-add-student">
+                        <i class="fas fa-plus"></i> Add New Student
+                    </button>
+                </div>
+
+                <div class="table-wrapper">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>Student ID</th>
+                                <th>Name</th>
+                                <th>Department</th>
+                                <th>Bus Number</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="students-table-body">
+                            <!-- Injected dynamically via JS -->
+                            <tr>
+                                <td colspan="5" style="text-align: center; padding: 24px; color: var(--text-muted);">
+                                    <i class="fas fa-spinner fa-spin"></i> Loading directory...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Modal Form -->
+    <div class="modal" id="student-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">Add New Student</h2>
+                <button class="btn-close-modal" id="btn-close-modal">&times;</button>
+            </div>
+            
+            <form id="student-form">
+                <div class="form-group">
+                    <label for="student-id">STUDENT ID</label>
+                    <input type="text" id="student-id" placeholder="e.g. S101" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="student-name">STUDENT NAME</label>
+                    <input type="text" id="student-name" placeholder="e.g. Rahul Sharma" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="student-dept">DEPARTMENT</label>
+                    <select id="student-dept" required>
+                        <option value="">-- Select Department --</option>
+                        <option value="Computer Science">Computer Science</option>
+                        <option value="Information Science">Information Science</option>
+                        <option value="Electronics & Comm">Electronics & Comm</option>
+                        <option value="Mechanical Eng">Mechanical Eng</option>
+                        <option value="Electrical Eng">Electrical Eng</option>
+                        <option value="Civil Eng">Civil Eng</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="student-bus">ASSIGNED BUS</label>
+                    <select id="student-bus" required>
+                        <option value="">-- Choose Bus Corridor --</option>
+                        <option value="Bus A1">Bus A1 (North Route)</option>
+                        <option value="Bus A2">Bus A2 (South Route)</option>
+                    </select>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="btn-close-modal" onclick="document.getElementById('student-modal').classList.remove('active')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Details</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Bus Monitoring and Attendance System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body id="dashboard-page">
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo-icon">
+                    <i class="fas fa-bus"></i>
+                </div>
+                <h2>Fleet Monitor</h2>
+            </div>
+            
+            <ul class="sidebar-menu">
+                <li class="active">
+                    <a href="{{ url_for('dashboard') }}">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('students_page') }}">
+                        <i class="fas fa-user-graduate"></i>
+                        <span>Students</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('attendance_page') }}">
+                        <i class="fas fa-clipboard-user"></i>
+                        <span>Attendance</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('routes_page') }}">
+                        <i class="fas fa-map-location-dot"></i>
+                        <span>Live Tracking</span>
+                    </a>
+                </li>
+            </ul>
+            
+            <div class="sidebar-footer">
+                <a href="{{ url_for('logout') }}" class="btn-logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Log Out</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Body Content -->
+        <main class="main-content">
+            <header class="page-header">
+                <div>
+                    <h1>Dashboard Overview</h1>
+                    <p>Real-time fleet logistics & student attendance tracker</p>
+                </div>
+                <div class="user-profile">
+                    <div class="user-avatar">AD</div>
+                    <span style="font-weight: 500; font-size: 0.9rem;">Administrator</span>
+                </div>
+            </header>
+
+            <!-- Metrics grid -->
+            <section class="metrics-grid">
+                <div class="card-metric">
+                    <div class="metric-info">
+                        <h3>Total Students</h3>
+                        <div id="total-students" class="metric-value">-</div>
+                    </div>
+                    <div class="metric-icon metric-blue">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+
+                <div class="card-metric">
+                    <div class="metric-info">
+                        <h3>Present Today</h3>
+                        <div id="present-students" class="metric-value">-</div>
+                    </div>
+                    <div class="metric-icon metric-green">
+                        <i class="fas fa-user-check"></i>
+                    </div>
+                </div>
+
+                <div class="card-metric">
+                    <div class="metric-info">
+                        <h3>Absent Today</h3>
+                        <div id="absent-students" class="metric-value">-</div>
+                    </div>
+                    <div class="metric-icon metric-red">
+                        <i class="fas fa-user-times"></i>
+                    </div>
+                </div>
+
+                <div class="card-metric">
+                    <div class="metric-info">
+                        <h3>Attendance Rate</h3>
+                        <div id="attendance-pct" class="metric-value">-%</div>
+                    </div>
+                    <div class="metric-icon metric-orange">
+                        <i class="fas fa-percentage"></i>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Primary panels layout -->
+            <div class="dashboard-detail">
+                <!-- Left panel: Attendance Graph -->
+                <div class="card-panel">
+                    <div class="panel-header">
+                        <h2>Attendance Trends</h2>
+                        <span style="font-size: 0.85rem; color: var(--text-muted);">Last 7 Days</span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="attendance-trend-chart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Right panel: Active Fleet Status -->
+                <div class="card-panel">
+                    <div class="panel-header">
+                        <h2>Fleet Status</h2>
+                        <a href="{{ url_for('routes_page') }}" style="font-size: 0.85rem; color: var(--primary-light); text-decoration: none; font-weight: 500;">
+                            View Map <i class="fas fa-arrow-right" style="font-size: 0.75rem;"></i>
+                        </a>
+                    </div>
+                    
+                    <div class="route-cards-list">
+                        <div class="route-status-card active">
+                            <div class="route-status-header">
+                                <span>Bus A1 (Active)</span>
+                                <span id="bus-status-badge" class="route-badge">MOVING</span>
+                            </div>
+                            
+                            <div class="route-detail-row">
+                                <span>Current Stop:</span>
+                                <strong id="bus-stop-val">Malleshwaram</strong>
+                            </div>
+                            <div class="route-detail-row">
+                                <span>Next Stop:</span>
+                                <strong id="bus-next-val">Yeshwanthpur</strong>
+                            </div>
+                            <div class="route-detail-row">
+                                <span>ETA:</span>
+                                <strong id="bus-eta-val">5 min</strong>
+                            </div>
+                            <div class="route-detail-row" style="margin-top: 12px; font-size: 0.75rem; border-top: 1px solid var(--border); padding-top: 8px;">
+                                <span>Status:</span>
+                                <span id="bus-status-text" style="font-weight: 500; color: var(--text-main);">En route...</span>
+                            </div>
+                        </div>
+                        
+                        <div class="route-status-card" style="opacity: 0.6;">
+                            <div class="route-status-header">
+                                <span>Bus A2 (Idle)</span>
+                                <span class="route-badge" style="background-color: var(--text-muted);">INACTIVE</span>
+                            </div>
+                            <div class="route-detail-row">
+                                <span>Garage Location:</span>
+                                <strong>Depot Yard 2</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
